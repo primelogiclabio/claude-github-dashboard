@@ -17,10 +17,9 @@ Goal: a plugin that shows a morning snapshot of the installer's relevant GitHub 
 - [ ] Bundle GitHub's official MCP server in the plugin's `.mcp.json`, and sign in once
 - [ ] Check that its search returns each PR's and issue's title, state, review state, dates and URL
 - [ ] SKILL.md: one account and fixed PR and issue searches as constants at the top, plus the layout and sorting rules
-- [ ] Two sections, Pull requests and Issues, each with title, date, status and link
+- [ ] Two tabs, Pull requests and Issues, each with title, date, status and link, capped per tab with a link to the full GitHub search when more match
 - [ ] Render the dashboard as an artifact page whose rows live in its database
 - [ ] Each refresh replaces all rows with the fresh pull: rows not in the pull are deleted, in one batch write
-- [ ] Apply the row cap per section, and link to the full GitHub search when more items match
 - [ ] Check whether a plugin can ship a scheduled task, or only a step that creates one
 - [ ] Weekday-morning scheduled task that runs the skill and refreshes the rows
 - [ ] Use it for a week on real PRs and issues, and note what to change before Phase 2
@@ -34,7 +33,7 @@ Goal: a plugin that shows a morning snapshot of the installer's relevant GitHub 
 
 ### Phase 3: alerts and notifications
 - [ ] Before replacing the rows, compare the fresh pull with them to find new and changed items; keep no other history
-- [ ] Mark PRs and issues that are new or changed since the last run at the top
+- [ ] Mark PRs and issues that are new or changed since the last run at the top of their tab
 - [ ] Notify when something is new or changed, such as a review requested, where the host supports notifications; stay quiet otherwise
 - [ ] Option to turn alerts off, or limit them to chosen repos
 
@@ -46,7 +45,8 @@ Goal: a plugin that shows a morning snapshot of the installer's relevant GitHub 
 - The skill holds the formatting and behaviour rules, because the scheduled run and an on-demand ask then produce the same dashboard
 - The dashboard is an artifact page with its rows in the page's database, because a scheduled run can update rows without republishing (same as daily-organizer); proposed, confirm before Phase 1
 - Each refresh overwrites the rows with a fresh pull and keeps no history, because the dashboard is a snapshot of what's relevant now, not an archive
-- Rows are open PRs and issues only, most recently updated first, capped at 25 per section (50 in all), with a link to the full GitHub search when more match, because the database must not grow over time and one section shouldn't crowd out the other; proposed default, confirm before Phase 1
+- The page has two tabs, Pull requests and Issues, not one combined list, because each is read on its own; the cap is per tab for the same reason
+- Rows are open PRs and issues only, most recently updated first, capped at 25 per tab (50 in all), with a link to the full GitHub search when more match, because the database must not grow over time; proposed default, confirm before Phase 1
 - Phase 1 hardcodes one setup, because the layout should settle before it turns into options
 - Installer settings are plugin options, not text in SKILL.md, because the plugin is shared from a public repo
 - The plugin ships no credentials, because each installer signs in to their own GitHub account through the connector
