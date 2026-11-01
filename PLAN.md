@@ -12,20 +12,19 @@ Goal: a plugin that shows a morning snapshot of the installer's relevant GitHub 
 ## Next
 
 ### Phase 1: MVP on one setup
-- [ ] Bundle GitHub's official MCP server in the plugin's `.mcp.json`, and sign in once
-- [ ] Check that its search returns each PR's and issue's title, state, review state, dates and URL, limited to a list of repos, for PRs awaiting their review and PRs they created
+- [ ] With the GitHub access set up here (the signed-in `gh` CLI, or a GitHub connector if one is added), check that search returns each PR's and issue's title, state, review state, dates and URL, limited to a list of repos, for PRs awaiting their review and PRs they created
 - [ ] SKILL.md: one account, the repos to track and the PR and issue searches as constants at the top, plus the layout and sorting rules
 - [ ] Two tabs, Pull requests and Issues, each with title, date, status and link, capped per tab with a link to the full GitHub search when more match
 - [ ] Render the dashboard as an artifact page whose rows live in its database
 - [ ] Each refresh replaces all rows with the fresh pull: rows not in the pull are deleted, in one batch write
-- [ ] Check whether a plugin can ship a scheduled task, or only a step that creates one
+- [ ] Check whether a plugin can ship a scheduled task, or only a step that creates one, and that the scheduled run can use the GitHub connector or `gh`
 - [ ] Weekday-morning scheduled task that runs the skill and refreshes the rows
 - [ ] Use it for a week on real PRs and issues, and note what to change before Phase 2
 
 ### Phase 2: configurable for any installer
 - [ ] Turn every Phase 1 constant into a plugin option: repos to track, issue scope, row cap, refresh time
 - [ ] Defaults come from the Open questions answers; the repo list has none, since the installer names it
-- [ ] Setup step (`/github-dashboard setup`): signs in to GitHub, asks for unset options starting with the repos to track, creates the scheduled task
+- [ ] Setup step (`/github-dashboard setup`): checks for a GitHub connector or a signed-in `gh` and says how to set one up when neither is there, asks for unset options starting with the repos to track, creates the scheduled task
 - [ ] Remove every author-specific value; test from a fresh install on a different GitHub account
 - [ ] README in the shared layout, marketplace entry, root and `plugins/` README rows; `claude plugin validate .`
 
@@ -39,7 +38,7 @@ Goal: a plugin that shows a morning snapshot of the installer's relevant GitHub 
 - (none)
 
 ## Decisions
-- One plugin bundles the GitHub MCP connector, a skill and a scheduled task, because one install should give the whole morning flow
+- One plugin holds a skill and a scheduled task and ships no MCP server: it uses the installer's own GitHub access, a GitHub connector when one is set up or else the signed-in `gh` CLI, because both are already maintained and signed in, and a bundled server would duplicate them
 - The skill holds the formatting and behaviour rules, because the scheduled run and an on-demand ask then produce the same dashboard
 - The dashboard is an artifact page with its rows in the page's database, because a scheduled run can update rows without republishing (same as daily-organizer); proposed, confirm before Phase 1
 - Each refresh overwrites the rows with a fresh pull and keeps no history, because the dashboard is a snapshot of what's relevant now, not an archive
@@ -49,7 +48,7 @@ Goal: a plugin that shows a morning snapshot of the installer's relevant GitHub 
 - Rows are open PRs and issues only, most recently updated first, capped at 25 per tab (50 in all), with a link to the full GitHub search when more match, because the database must not grow over time; proposed default, confirm before Phase 1
 - Phase 1 hardcodes one setup, because the layout should settle before it turns into options
 - Installer settings are plugin options, not text in SKILL.md, because the plugin is shared from a public repo
-- The plugin ships no credentials, because each installer signs in to their own GitHub account through the connector
+- The plugin ships no credentials, because each installer signs in to their own GitHub account through the connector or `gh`
 
 ## Parking lot
 - (none)
